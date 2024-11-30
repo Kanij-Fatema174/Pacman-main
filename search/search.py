@@ -87,58 +87,75 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    
+
+
     util.raiseNotDefined()
+def depthFirstSearch(problem):
+    """
+    Implements Depth-First Search (DFS).
+    """
+    stack = Stack()
+    visited = set()
+    stack.push((problem.getStartState(), [], 0))  # (state, actions, cost)
+
+    while not stack.isEmpty():
+        state, actions, cost = stack.pop()
+
+        if problem.isGoalState(state):
+            return actions
+
+        if state not in visited:
+            visited.add(state)
+            for successor, action, stepCost in problem.getSuccessors(state):
+                stack.push((successor, actions + [action], cost + stepCost))
+
+
+
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    #util.raiseNotDefined()
-    """ Search the shallowest nodes in the search tree first. """
-    currPath = []           # The path that is popped from the frontier in each loop
-    currState =  problem.getStartState()    # The state(position) that is popped for the frontier in each loop
-    print(f"currState: {currState}")
-    if problem.isGoalState(currState):     # Checking if the start state is also a goal state
-        return currPath
+    """
+    Implements Breadth-First Search (BFS).
+    """
+    queue = Queue()
+    visited = set()
+    queue.push((problem.getStartState(), [], 0))  # (state, actions, cost)
 
-    frontier = Queue()
-    frontier.push( (currState, currPath) )     # Insert just the start state, in order to pop it first
-    explored = set()
-    while not frontier.isEmpty():
-        currState, currPath = frontier.pop()    # Popping a state and the corresponding path
-        # To pass autograder.py question2:
-        if problem.isGoalState(currState):
-            return currPath
-        explored.add(currState)
-        frontierStates = [ t[0] for t in frontier.list ]
-        for s in problem.getSuccessors(currState):
-            if s[0] not in explored and s[0] not in frontierStates:
-                # Lecture code:
-                # if problem.isGoalState(s[0]):
-                #     return currPath + [s[1]]
-                frontier.push( (s[0], currPath + [s[1]]) )      # Adding the successor and its path to the frontier
+    while not queue.isEmpty():
+        state, actions, cost = queue.pop()
 
-    return []       # If this point is reached, a solution could not be found.
+        if problem.isGoalState(state):
+            return actions
+
+        if state not in visited:
+            visited.add(state)
+            for successor, action, stepCost in problem.getSuccessors(state):
+                queue.push((successor, actions + [action], cost + stepCost))
+
+    return []
+
 
 def uniformCostSearch(problem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
-
-def nullHeuristic(state, problem=None):
     """
-    A heuristic function estimates the cost from the current state to the nearest
-    goal in the provided SearchProblem.  This heuristic is trivial.
+    Implements Uniform Cost Search (UCS).
     """
-    return 0
+    priority_queue = PriorityQueue()
+    visited = set()
+    priority_queue.push((problem.getStartState(), [], 0), 0)  # (state, actions, cost), priority
 
-def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    while not priority_queue.isEmpty():
+        state, actions, cost = priority_queue.pop()
+
+        if problem.isGoalState(state):
+            return actions
+
+        if state not in visited:
+            visited.add(state)
+            for successor, action, stepCost in problem.getSuccessors(state):
+                new_cost = cost + stepCost
+                priority_queue.push((successor, actions + [action], new_cost), new_cost)
+
+    return []
 
 
-# Abbreviations
-bfs = breadthFirstSearch
-dfs = depthFirstSearch
-astar = aStarSearch
-ucs = uniformCostSearch
+git add .
